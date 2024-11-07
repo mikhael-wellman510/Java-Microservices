@@ -4,6 +4,7 @@ import com.example.account_service.Service.AccountService;
 import com.example.account_service.dto.CommonResponse;
 import com.example.account_service.dto.RegisterCheckDto;
 import com.example.account_service.dto.RegisterCheckResponse;
+import com.example.account_service.dto.RegisterVerificationDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -41,4 +42,18 @@ public class AccountController {
         return accountService.testLoadBalancer();
     };
 
+    @PostMapping("/verification")
+    public ResponseEntity<?>verification(@RequestBody RegisterVerificationDto registerVerificationDto){
+
+
+        String result = accountService.verification(registerVerificationDto);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(CommonResponse.<String>builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Otp Valid")
+                        .data(result)
+                        .build()
+                );
+    }
 }

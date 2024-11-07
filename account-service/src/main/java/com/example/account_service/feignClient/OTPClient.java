@@ -3,6 +3,7 @@ package com.example.account_service.feignClient;
 import com.example.account_service.dto.CommonResponse;
 import com.example.account_service.dto.OtpResponse;
 import com.example.account_service.dto.RegisterCheckDto;
+import com.example.account_service.dto.RegisterVerificationDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,4 +18,8 @@ public interface OTPClient {
 
     @GetMapping("/test-loadbalancer")
     public String testLoadBalancer();
+
+
+    @PostMapping("/verification")
+    public ResponseEntity<?>verificationOTP(@RequestBody RegisterVerificationDto registerVerificationDto);
 }

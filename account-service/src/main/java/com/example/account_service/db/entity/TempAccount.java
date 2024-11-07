@@ -3,6 +3,7 @@ package com.example.account_service.db.entity;
 import jakarta.persistence.Id;
 import lombok.*;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 @Setter
 @Getter
@@ -13,6 +14,8 @@ import org.springframework.data.redis.core.RedisHash;
 public class TempAccount {
     @Id
     private String id;
+
+    @Indexed
     private String email;
     private boolean valid = false;
 

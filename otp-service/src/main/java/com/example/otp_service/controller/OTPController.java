@@ -3,6 +3,7 @@ package com.example.otp_service.controller;
 import com.example.otp_service.dto.CommonResponse;
 import com.example.otp_service.dto.OtpResponse;
 import com.example.otp_service.dto.RegisterCheckDto;
+import com.example.otp_service.dto.RegisterVerificationDto;
 import com.example.otp_service.service.OtpService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -44,6 +45,20 @@ public class OTPController {
 
         log.debug("Port : {} ", port );
         return "Ok with port : " + port;
+    }
+
+    @PostMapping("/verification")
+    public ResponseEntity<?>verificationOTP(@RequestBody RegisterVerificationDto registerVerificationDto){
+
+        String result = otpService.verificationOtp(registerVerificationDto);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(CommonResponse.<String>builder()
+                        .statusCode(HttpStatus.FOUND.value())
+                        .message("Sukses")
+                        .data(result)
+                        .build()
+                );
     }
 
 

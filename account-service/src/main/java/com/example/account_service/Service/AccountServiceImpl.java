@@ -3,10 +3,7 @@ package com.example.account_service.Service;
 import com.example.account_service.Exception.ConflictException;
 import com.example.account_service.db.entity.Account;
 import com.example.account_service.db.entity.TempAccount;
-import com.example.account_service.dto.CommonResponse;
-import com.example.account_service.dto.OtpResponse;
-import com.example.account_service.dto.RegisterCheckDto;
-import com.example.account_service.dto.RegisterCheckResponse;
+import com.example.account_service.dto.*;
 import com.example.account_service.feignClient.OTPClient;
 import com.example.account_service.repositori.AccountRepository;
 import com.example.account_service.repositori.TempAccountRepository;
@@ -15,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -50,10 +48,10 @@ public class AccountServiceImpl implements AccountService{
         // Todo -> Save ke redis
       TempAccount save =  tempAccountRepository.save(tempAccount);
 
-      //Todo -> Request OTP -> PANGGIL SERVICE OTP
+
 
         try{
-
+            //Todo -> Request OTP -> PANGGIL SERVICE OTP
             otpClient.requestOTP(registerCheckDto);
         }catch (FeignException ex){
             throw new  RuntimeException(ex);
@@ -71,6 +69,36 @@ public class AccountServiceImpl implements AccountService{
         return RegisterCheckResponse.builder()
                 .id(save.getId())
                 .build();
+    }
+
+    @Override
+    public String verification(RegisterVerificationDto registerVerificationDto) {
+
+        //todo -> Check Redis
+        TempAccount tempAccount = tempAccountRepository.getFirstByEmail(registerVerificationDto.getEmail());
+
+
+        System.out.println("Cek hasil " + tempAccount);
+        if (tempAccount==null) {
+            throw new NoSuchElementException("Data tidak ada");
+        }
+
+        //todo -> Verification Otp
+
+        try{
+          otpClient.verificationOTP(registerVerificationDto);
+
+        }catch (FeignException.FeignClientException ex){
+            ex.printStackTrace();
+            throw new NoSuchElementException("Otp Tidak valid");
+        }
+        // Updated verification
+        tempAccount.setValid(true);
+        tempAccountRepository.save(tempAccount);
+
+
+
+        return "Valid Bro";
     }
 
     @Override

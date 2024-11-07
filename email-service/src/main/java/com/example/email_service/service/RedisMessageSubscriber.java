@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class RedisMessageSubscriber implements MessageListener {
 
     private final EmailService emailService;
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
     @Override
     public void onMessage(Message message, byte[] pattern) {
         String msg = message.toString();
